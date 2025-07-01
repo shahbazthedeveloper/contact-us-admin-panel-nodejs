@@ -82,7 +82,8 @@
         const data = await response.json();
         
         if (response.ok) {
-          window.location.href = '/admin/dashboard.html';
+          // window.location.href = '/admin/dashboard.html';
+          window.location.href = '/';  // Now redirects to root which shows dashboard
         } else {
           errorElement.textContent = data.error || 'Login failed. Please try again.';
         }

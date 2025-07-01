@@ -45,6 +45,15 @@ app.use('/api/admin', adminRoutes);
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Redirect root to dashboard (with auth check)
+app.get('/', (req, res) => {
+  if (req.session.user) {  // Check if user is logged in
+    res.sendFile(path.join(__dirname, 'public/admin/dashboard.html'));
+  } else {
+    res.redirect('/login.html');  // Redirect to login if not authenticated
+  }
+});
+
 // Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
