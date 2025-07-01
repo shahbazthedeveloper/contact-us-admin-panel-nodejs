@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Contact = require('../models/Contact');
+const { sendContactEmail } = require('../services/email');
 
 // Submit contact form
 router.post('/', async (req, res) => {
@@ -37,6 +38,8 @@ router.post('/', async (req, res) => {
     });
 
     await newContact.save();
+    await sendContactEmail(newContact); // This will send the formatted email
+
     
     res.status(201).json({ 
       success: true,
