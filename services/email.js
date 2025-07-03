@@ -44,7 +44,7 @@ module.exports = {
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Message:</td>
-              <td style="padding: 8px; border: 1px solid #ddd;">${contact.message}</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${contact.message || 'N/A'}</td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Submission Date & Time:</td>
