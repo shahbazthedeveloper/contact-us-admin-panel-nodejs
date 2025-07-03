@@ -8,39 +8,31 @@ router.post('/', async (req, res) => {
   try {
     const { fullName, companyName, phone, services, message } = req.body;
     
-    // Validate required fields
-    if (!fullName || !phone || !services || !message) {
+    // Validate required fields - only fullName and phone are required
+    if (!fullName || !phone) {
       return res.status(400).json({ 
-        error: 'Full name, phone, services, and message are required',
+        error: 'Full name and phone are required',
         missingFields: {
           fullName: !fullName,
-          phone: !phone,
-          services: !services,
-          message: !message
+          phone: !phone
         }
       });
     }
 
-    // Validate services is an array
-    if (!Array.isArray(services)) {
-      return res.status(400).json({
-        error: 'Services must be an array of strings'
-      });
-    }
-
-    // Create new contact
+    // Create new contact with proper field handling
     const newContact = new Contact({
       fullName,
       companyName: companyName || undefined, // Will not save if undefined
       phone,
-      services, // Required per schema
-      message
+      services: services || [], // Will default to empty array if not provided
+      message: message || undefined // Will not save if empty
     });
 
     await newContact.save();
-    await sendContactEmail(newContact); // This will send the formatted email
-
     
+    // Send email (even if some fields are empty)
+    await sendContactEmail(newContact);
+
     res.status(201).json({ 
       success: true,
       message: 'Contact form submitted successfully',
@@ -52,16 +44,22 @@ router.post('/', async (req, res) => {
     
     // Handle MongoDB validation errors
     if (error.name === 'ValidationError') {
+      const errorDetails = {};
+      Object.keys(error.errors).forEach(key => {
+        errorDetails[key] = error.errors[key].message;
+      });
+      
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
-        details: error.errors
+        details: errorDetails
       });
     }
     
     res.status(500).json({ 
       success: false,
-      error: 'Internal server error' 
+      error: 'Internal server error',
+      systemError: error.message // For debugging purposes
     });
   }
 });
