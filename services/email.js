@@ -5,15 +5,15 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.ALERT_FROM,
-    pass: process.env.EMAIL_PASSWORD
-  }
+    pass: process.env.EMAIL_PASSWORD,
+  },
 });
 
 module.exports = {
   sendContactEmail: async (contact) => {
     try {
       const formattedDateTime = new Date().toLocaleString('en-IN', {
-        timeZone: 'Asia/Kolkata'
+        timeZone: 'Asia/Kolkata',
       });
 
       const emailContent = `
@@ -24,27 +24,37 @@ module.exports = {
           <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; width: 30%;">Full Name:</td>
-              <td style="padding: 8px; border: 1px solid #ddd;">${contact.fullName}</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${
+                contact.fullName
+              }</td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold; width: 30%;">Company Name:</td>
-              <td style="padding: 8px; border: 1px solid #ddd;">${contact.companyName || 'N/A'}</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${
+                contact.companyName || 'N/A'
+              }</td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Phone:</td>
-              <td style="padding: 8px; border: 1px solid #ddd;">${contact.phone}</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${
+                contact.phone
+              }</td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Services Interested:</td>
               <td style="padding: 8px; border: 1px solid #ddd;">
                 <ul style="margin: 0; padding-left: 20px;">
-                  ${contact.services.map((service) => `<li>${service}</li>`).join('')}
+                  ${contact.services
+                    .map((service) => `<li>${service}</li>`)
+                    .join('')}
                 </ul>
               </td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Message:</td>
-              <td style="padding: 8px; border: 1px solid #ddd;">${contact.message || 'N/A'}</td>
+              <td style="padding: 8px; border: 1px solid #ddd;">${
+                contact.message || 'N/A'
+              }</td>
             </tr>
             <tr>
               <td style="padding: 8px; border: 1px solid #ddd; font-weight: bold;">Submission Date & Time:</td>
@@ -56,15 +66,15 @@ module.exports = {
 
       await transporter.sendMail({
         from: `"Contact Form" <${process.env.ALERT_FROM}>`,
-        // to: 'reachus@vvworx.com', // Your recipient email
-        to: 'shahbazthedeveloper@gmail.com', // Your recipient email
+        to: 'reachus@vvworx.com', // Your recipient email
+        // to: 'shahbazthedeveloper@gmail.com', // Your recipient email
         subject: `Voix & Vision Worx: Contact Form Submission - ${formattedDateTime}`,
-        html: emailContent
+        html: emailContent,
       });
 
       console.log('Contact email sent successfully');
     } catch (error) {
       console.error('Error sending contact email:', error);
     }
-  }
+  },
 };
